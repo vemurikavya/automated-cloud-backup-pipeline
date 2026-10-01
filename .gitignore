@@ -1,0 +1,17 @@
+# Backup archives
+backups/
+*.tar.gz
+
+# Logs
+logs/
+*.log
+
+# Temporary restore directory
+restore-test/
+
+# AWS credential/config directories if accidentally copied here
+.aws/
+
+# Editor/OS files
+.vscode/
+.DS_Store
