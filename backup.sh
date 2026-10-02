@@ -13,6 +13,7 @@ log() {
 }
 
 S3_BUCKET="s3://kavya-linux-backup-2026"
+AWS_PROFILE="backup-user"
 
 RETENTION_COUNT=7
 
@@ -44,7 +45,7 @@ fi
 
 # Check AWS authentication
 
-if ! aws sts get-caller-identity >/dev/null 2>&1; then
+if ! aws sts get-caller-identity --profile "$AWS_PROFILE" >/dev/null 2>&1; then
     log "ERROR: AWS authentication failed"
     exit 1
 fi
@@ -69,7 +70,7 @@ if [ "$STATUS" -eq 0 ]; then
 
         log "S3 upload attempt $ATTEMPT/$MAX_RETRIES: $BACKUP_FILE"
 
-        aws s3 cp "$BACKUP_FILE" "$S3_BUCKET/"
+        aws s3 cp "$BACKUP_FILE" "$S3_BUCKET/" --profile "$AWS_PROFILE"
 
         UPLOAD_STATUS=$?
 
@@ -95,7 +96,7 @@ if [ "$STATUS" -eq 0 ]; then
 
         # Verify backup exists in S3
 
-        if aws s3 ls "$S3_BUCKET/$(basename "$BACKUP_FILE")" >/dev/null 2>&1; then
+        if aws s3 ls "$S3_BUCKET/$(basename "$BACKUP_FILE")" --profile "$AWS_PROFILE" >/dev/null 2>&1; then
 
             log "S3 verification successful: $(basename "$BACKUP_FILE")"
 
